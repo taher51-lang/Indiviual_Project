@@ -27,9 +27,8 @@ class Hospital {
 class PatientData extends Hospital {Scanner sc = new Scanner(System.in);
     static int counter = 0;
     int defaultBalance = 1000;
-    String name = "";
+    String name ,pass;
     String feedback = "";
-    String pass = "Hii";
     static  int choice;
     int id, medicalBills;
     String appointmentDate = "";
@@ -44,8 +43,8 @@ class Patient extends PatientData {
         generateId();
     }
 
-    boolean login(Patient obj, String name, String pass1) {
-        if (obj.name.equalsIgnoreCase(name) && obj.pass.equals(pass1)) {
+    boolean login(Patient obj, String name1, String pass1) {
+        if (obj.name.equalsIgnoreCase(name1) && obj.pass.equals(pass1)) {
             System.out.println("Login Successful");
             return true;
         } else {
@@ -71,7 +70,10 @@ class Patient extends PatientData {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter The date and Time from the below given slots");
         display();
+        boolean k = true;
+        while(k){
         int appointDate = sc.nextInt();
+        k=false;
         switch (appointDate) {
             case 1:
                 appointmentDate = "16/2/25 , Time: 9:00 AM IST";
@@ -104,9 +106,9 @@ class Patient extends PatientData {
                 appointmentDate = "20/2/25 , Time: 15:00 PM IST";
                 break;
             default:
-                System.out.println("No proper date selected");
+                System.out.println("No proper date selected");k=true;
                 break;
-        }
+        }}
         System.out.println(appointmentStatus());
     }
     String appointmentStatus() {
@@ -139,17 +141,19 @@ class Patient extends PatientData {
     void payment(){
         System.out.println("Kindly Enter The amount To pay From Your account");
         int payment = sc.nextInt();
+        while(true){
         if(payment==medicalBills){
             if(medicalBills>defaultBalance){
                 System.out.println("Insufficient Balance. Kindly add balance in your account ");
                 addMoney();
             }
             else {
-            defaultBalance-=medicalBills;
-            System.out.println("Your Account Balance is "+"Rs"+defaultBalance+"/-");}
+            defaultBalance-=medicalBills;medicalBills=0;
+            System.out.println("Your Account Balance is "+"Rs"+defaultBalance+"/-");break;}
         }
-        else
+        else{
             System.out.println("Kindly Enter Proper Amount");
+             payment = sc.nextInt();}}
     }
     void addMoney(){
         System.out.println("Enter The Amount You want to add in your wallet");
@@ -158,7 +162,7 @@ class Patient extends PatientData {
         String password = sc.nextLine();
         if(pass.equals(password))
             defaultBalance+=amount;
-        else System.out.println("-----WRONG PASSWORD!!!Account has been Blocked----");
+        else {System.out.println("-----WRONG PASSWORD---Follow procedure again");}
     }
 }
 class Run {
@@ -172,12 +176,15 @@ class Run {
         Patient calling = new Patient();
         for (int i = 0; i < patientNames.length; i++) {
             record[i].name = patientNames[i];
+            record[i].pass=record[i].name+"123";
         }
         System.out.println("Welcome to Patient login Interface");
-        System.out.println("Kindly enter Your id, name, and pass");
+        System.out.println("Kindly enter Your id");
         int id1 = sc.nextInt();
         sc.nextLine();
+        System.out.println("Kindly enter Your Name");
         String name = sc.nextLine();
+        System.out.println("Kindly enter Your Password");
         String pass = sc.nextLine();
         boolean k = true;
         while (k) {
@@ -200,10 +207,19 @@ class Run {
                     System.out.println("Please Enter whatever service You need :");
                     System.out.println("1.Normal Checkup\n2.Blood/Urine Test\n3.Bowl Test\n4.Sugar Level Check\n5.Bp level Check\n6.exit");
                     int checkUpChoice[] = new int[5];
+                    boolean c = true;
+                    while(c){
                     for (int i = 0; i < checkUpChoice.length; i++) {
                         checkUpChoice[i] = sc.nextInt();
-                        if (checkUpChoice[i] == 6)
+                        if (checkUpChoice[i] == 6) {
+                            c = false;
                             break;
+                        }
+                        else if (checkUpChoice[i] > 6 || checkUpChoice[i] < 1) {
+                            System.out.println("Invalid Choice");
+                            System.out.println("Enter all your choices Once again");
+                        }
+                    }
                     }
                     record[id1 - 1].calculateBill(checkUpChoice);
                     record[id1 - 1].payment();
@@ -213,7 +229,7 @@ class Run {
                     if (record[id1 - 1].appointmentDate.equals("")) {
                         System.out.println("Kindly Book Appointment First");
                     } else {
-                        record[id1 - 1].appointmentStatus();
+                        System.out.println(record[id1 - 1].appointmentStatus());
                     }
                     break;
                 case 3:
@@ -225,6 +241,8 @@ class Run {
                     System.out.println("Balance: "+"Rs"+record[id1-1].defaultBalance+"/-");break;
                 case 6:
                     System.out.println("Thanks for visiting us.");b= false;break;
+                default:
+                    System.out.println("Select from available services");break;
             }
         }
     }
